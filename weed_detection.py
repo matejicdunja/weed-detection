@@ -8,7 +8,6 @@ from keras._tf_keras.keras.preprocessing.image import ImageDataGenerator
 from keras._tf_keras.keras.optimizers import Adam
 from keras._tf_keras.keras.utils import to_categorical
 import matplotlib.pyplot as plt
-from datetime import datetime
 
 
 class WeedCNN:
@@ -158,6 +157,8 @@ class WeedCNN:
             validation_data=(self.val_images, self.val_labels),
         )
 
+        #self.plot_training(h)
+
     def evaluate_model(self):
         test_loss, test_accuracy = self.model.evaluate(self.test_images,
                                                        self.test_labels)
@@ -178,3 +179,25 @@ class WeedCNN:
             return 'weed'
 
         return "prediction error"
+
+    def plot_training(self, history):
+        plt.figure(figsize=(12, 4))
+        plt.subplot(1, 2, 1)
+        plt.plot(history.history['loss'], label='Training Loss')
+        plt.plot(history.history['val_loss'], label='Validation Loss')
+        plt.title('Loss')
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')
+        plt.legend()
+
+        plt.subplot(1, 2, 2)
+        plt.plot(history.history['accuracy'], label='Training Accuracy')
+        plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+        plt.title('Accuracy')
+        plt.xlabel('Epoch')
+        plt.ylabel('Accuracy')
+        plt.legend()
+
+        plt.tight_layout()
+        plt.savefig(f'weedCNN-lr_{self.lr}-bs_{self.batch_size}-ep_{self.epochs}.png')
+        plt.draw()
