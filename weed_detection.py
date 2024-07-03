@@ -96,7 +96,7 @@ class WeedCNN:
         print("Number of test images:", len(self.test_images))
         print("Number of test labels:", len(self.test_labels))
 
-    def build_model(self):
+    def build_model1(self):
         self.model = Sequential()
         self.model.add(Conv2D(32, (3, 3), activation='relu', input_shape=self.img_dims, kernel_regularizer=l2(self.regularizerValue)))
         self.model.add(MaxPooling2D((2, 2)))
@@ -106,6 +106,32 @@ class WeedCNN:
         self.model.add(Dense(128, activation='relu'))
         self.model.add(Dropout(0.5))
         self.model.add(Dense(self.num_classes, activation='softmax'))
+
+    def build_model(self):
+        self.model = Sequential()
+        self.model.add(Conv2D(64, (3, 3), activation='relu', input_shape=self.img_dims, kernel_regularizer=l2(self.regularizerValue)))
+        self.model.add(MaxPooling2D((2, 2)))
+        self.model.add(BatchNormalization())
+        self.model.add(Dropout(0.25))
+        self.model.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
+        self.model.add(MaxPooling2D((2, 2)))
+        self.model.add(BatchNormalization())
+        self.model.add(Dropout(0.25))
+        self.model.add(Conv2D(256, (3, 3), activation='relu', padding='same'))
+        self.model.add(MaxPooling2D((2, 2)))
+        self.model.add(BatchNormalization())
+        self.model.add(Dropout(0.25))
+        self.model.add(Conv2D(512, (3, 3), activation='relu', padding='same'))
+        self.model.add(MaxPooling2D((2, 2)))
+        self.model.add(Dropout(0.25))
+        self.model.add(Conv2D(1024, (3, 3), activation='relu', padding='same'))
+        self.model.add(MaxPooling2D((2, 2)))
+        self.model.add(Dropout(0.25))
+        self.model.add(Flatten())
+        self.model.add(Dense(2048, activation='relu'))
+        self.model.add(Dropout(0.5))
+        self.model.add(Dense(self.num_classes, activation='softmax'))
+
 
     def train_model(self):
         datagen = ImageDataGenerator(
@@ -135,8 +161,8 @@ class WeedCNN:
     def evaluate_model(self):
         test_loss, test_accuracy = self.model.evaluate(self.test_images,
                                                        self.test_labels)
-        print(test_loss)
-        print(test_accuracy)
+        print("Test Loss:", test_loss)
+        print("Test Accuracy:", test_accuracy)
 
     def predict_weed(self, image_path):
         img = cv2.imread(image_path)
